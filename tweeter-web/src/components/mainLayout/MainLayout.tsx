@@ -16,7 +16,7 @@ const MainLayout = () => {
                 <UserInfo />
               </div>
               <div className="p-3 border mt-1 rounded bg-light">
-                <PostStatus />
+                <PostStatus/>
               </div>
             </div>
           </div>

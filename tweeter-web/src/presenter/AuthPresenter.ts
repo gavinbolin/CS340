@@ -1,36 +1,32 @@
 import { User, AuthToken } from "tweeter-shared";
+import { Presenter, View } from "./Presenter";
+import { UserService } from "../model/service/UserService";
 
-export interface AuthView{
-  //firstName: string,
-  //lastName: string,
-  //alias: string,
-  //password: string,
-  //imgBytes: Uint8Array, 
-  //imgUrl: string,
-  rememberMe: boolean,
+export interface AuthView extends View { 
   navigate: (path: string) => void;
-  useUserInfo: (currUser: User, displayedUser: User | null, authToken: AuthToken, rememberMe: boolean) => void;
-  displayErrorMessage: (message: string) => void;
+  updateUserInfo: (currUser: User, displayedUser: User | null, authToken: AuthToken, rememberMe: boolean) => void; 
 }
 
-export abstract class AuthPresenter{
-  private _view: AuthView;
-  protected constructor(view: AuthView){
-    this._view = view;
+export abstract class AuthPresenter extends Presenter {
+  protected _service: UserService | null = null;
+  public constructor(view: AuthView){
+    super(view);
   }
 
-  protected get view(){
-    return this._view;
+  public get view(): AuthView { return super.view as AuthView; }
+  public get service(){ 
+    if (this._service == null){
+    this._service = new UserService(); 
+    }
+    return this._service;
   }
 
-  public get rememberMe(){
-    return this.view.rememberMe;
-  }
+  public abstract auth( alias:string, password:string, rememberMe:boolean, firstName?: string|null, lastName?:string|null, imageBytes?:Uint8Array|null, originalUrl?: string|null ): Promise<void>;
+  protected abstract getItemString(): string;
 
-  public set rememberMe(value: boolean){
-    this.view.rememberMe = value;
-  }
-
-  public abstract doAuth(alias: string, password: string, originalUrl?: string): void;
-  // public checkSubmitButtonStatus(): boolean {return !this.view.alias || !this.view.password; }
+  public async doAuth(alias:string, password:string, rememberMe:boolean, firstName?: string|null, lastName?:string|null, imageBytes?:Uint8Array|null, originalUrl?: string|null) {
+    this.doFailReportOperation(async () => {
+      this.auth(alias, password, rememberMe, firstName, lastName, imageBytes, originalUrl)
+    }, this.getItemString());
+  };
 }

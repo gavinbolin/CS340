@@ -1,3 +1,5 @@
+import { UserDTO } from "../dto/UserDTO";
+
 export class User {
   private _firstName: string;
   private _lastName: string;
@@ -16,45 +18,21 @@ export class User {
     this._imageUrl = imageUrl;
   }
 
-  public get firstName(): string {
-    return this._firstName;
-  }
+  public get firstName(): string { return this._firstName; }
+  public set firstName(value: string) { this._firstName = value; }
 
-  public set firstName(value: string) {
-    this._firstName = value;
-  }
+  public get lastName(): string { return this._lastName; }
+  public set lastName(value: string) { this._lastName = value; }
 
-  public get lastName(): string {
-    return this._lastName;
-  }
+  public get name() { return `${this.firstName} ${this.lastName}`; }
 
-  public set lastName(value: string) {
-    this._lastName = value;
-  }
+  public get alias(): string { return this._alias; }
+  public set alias(value: string) { this._alias = value; }
 
-  public get name() {
-    return `${this.firstName} ${this.lastName}`;
-  }
+  public get imageUrl(): string { return this._imageUrl; }
+  public set imageUrl(value: string) { this._imageUrl = value; }
 
-  public get alias(): string {
-    return this._alias;
-  }
-
-  public set alias(value: string) {
-    this._alias = value;
-  }
-
-  public get imageUrl(): string {
-    return this._imageUrl;
-  }
-
-  public set imageUrl(value: string) {
-    this._imageUrl = value;
-  }
-
-  public equals(other: User): boolean {
-    return this._alias === other._alias;
-  }
+  public equals(other: User): boolean { return this._alias === other._alias; }
 
   public static fromJson(json: string | null | undefined): User | null {
     if (!!json) {
@@ -78,4 +56,17 @@ export class User {
   public toJson(): string {
     return JSON.stringify(this);
   }
+
+  // public static fromDTO(dto: UserDTO|null|undefined): User|null {
+  //   return dto ? new User(dto.firstName, dto.lastName, dto.alias, dto.imageUrl): null;
+  // }
+
+  // public get dto(): UserDTO{
+  //   return {
+  //     firstName: this._firstName,
+  //     lastName: this._lastName,
+  //     alias: this._alias,
+  //     imageUrl: this._imageUrl,
+  //   }
+  // }
 }

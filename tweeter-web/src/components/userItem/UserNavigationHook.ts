@@ -12,7 +12,8 @@ const useUserNavigation = () => {
   };
   const presenter = new UserNavigationPresenter(listener);
   const navigateToUser= async (event: React.MouseEvent) => {
-    presenter.navigateToUser(currentUser!, authToken!, event);
+    event.preventDefault();
+    presenter.navigateToUser(currentUser!, authToken!, event.target.toString());
   };
 
   return navigateToUser;

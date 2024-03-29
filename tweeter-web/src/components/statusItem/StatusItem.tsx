@@ -7,7 +7,6 @@ interface Props {
   status: Status;
 }
 
-
 const StatusItem = (props: Props) => {
   const navigateToUser = useUserNavigation();
 

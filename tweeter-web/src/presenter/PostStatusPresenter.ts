@@ -1,37 +1,20 @@
 import { AuthToken, Status, User } from "tweeter-shared";
-import { StatusService } from "../model/service/StatusService";
+import { MessageView, MessagePresenter } from "./MessagePresenter";
 
+export interface PostStatusView extends MessageView { setPost: (post: string) => void; }
+export class PostStatusPresenter extends MessagePresenter {
+  public constructor(view: PostStatusView){ super(view); }
+  public get view(): PostStatusView { return super.view as PostStatusView; }
 
-export interface PostStatusView{
-  displayInfoMessage: (message: string, num: number) => void
-  clearLastInfoMessage: () => void;
-  setPost: (post: string) => void;
-  displayErrorMessage: (messgae: string) => void;
-}
-
-export class PostStatusPresenter {
-  private view: PostStatusView;
-  private service: StatusService;
-  public constructor(view: PostStatusView){
-    this.view = view;
-    this.service = new StatusService;
-  }
-
-  public async submitPost(post: string, currentUser: User, authToken: AuthToken, event: React.MouseEvent) {
-    event.preventDefault();
-
-    try {
+  public async submitPost(currentUser: User|null, authToken: AuthToken|null, post: string) {
+    // event.preventDefault();
+    this.doFailReportOperation(async () => {
       this.view.displayInfoMessage("Posting status...", 0);
-
       let status = new Status(post, currentUser!, Date.now());
-
       await this.service.postStatus(authToken!, status);
-
       this.view.clearLastInfoMessage();
       this.view.setPost("");
       this.view.displayInfoMessage("Status posted!", 2000);
-    } catch (error) {
-      this.view.displayErrorMessage(`Failed to post the status because of exception: ${error}`);
-    }
+    }, "post the status")
   };
 }

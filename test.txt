@@ -1,0 +1,7 @@
+{
+  "firstName":"gavin",
+  "lastName":"bolin",
+  "alias": "gbolin",
+  "password": "pass",
+  "userImageBytes":"1"
+}

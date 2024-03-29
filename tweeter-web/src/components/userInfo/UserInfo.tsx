@@ -1,7 +1,6 @@
 import "./UserInfo.css";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-// import { AuthToken, FakeData, User } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "./UserInfoHook";
 import { UserInfoView, UserInfoPresenter } from "../../presenter/UserInfoPresenter";
@@ -37,17 +36,21 @@ const UserInfo = () => {
     presenter.setNumbFollowers(authToken!, displayedUser!);
   };
   const switchToLoggedInUser = async (event: React.MouseEvent) => {
-    presenter.switchToLoggedInUser(currentUser!, event);
+    event.preventDefault();
+    presenter.switchToLoggedInUser(currentUser!);
   };
   const followDisplayedUser = async (event: React.MouseEvent) => {
-    presenter.followDisplayedUser(authToken!, displayedUser!, event);
+    event.preventDefault();
+    presenter.followDisplayedUser(authToken!, displayedUser!);
   };
   const unfollowDisplayedUser = async (event: React.MouseEvent) => {
-    presenter.unfollowDisplayedUser(authToken!, displayedUser!, event);
+    event.preventDefault();
+    presenter.unfollowDisplayedUser(authToken!, displayedUser!);
   };
 
   useEffect(() => {
     setIsFollowerStatus;
+    [displayedUser];
     setNumbFollowees;
     setNumbFollowers;
   });

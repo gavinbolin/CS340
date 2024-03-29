@@ -8,11 +8,11 @@ import AuthenticationFields from "../AuthenticationFields";
 import useUserInfo from "../../userInfo/UserInfoHook";
 import { RegisterView, RegisterPresenter } from "../../../presenter/RegisterPresenter";
 
-interface Props {
-  presenterGenerator: (view: RegisterView) => RegisterPresenter;
-}
+// interface Props {
+//   // presenterGenerator: (view: RegisterView) => RegisterPresenter;
+// }
 
-const Register = (props: Props) => {
+const Register = () => { //props: Props
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [alias, setAlias] = useState("");
@@ -41,9 +41,9 @@ const Register = (props: Props) => {
     setImageBytes: setImageBytes
   }
   
-  const [presenter] = useState(props.presenterGenerator(listener));
+  const [presenter] = useState(new RegisterPresenter(listener)); //props.presenterGererator(listener)
   const doRegister = async () => {
-    presenter.doRegister(firstName, lastName, alias!, password!, imageBytes, rememberMeRef.current);
+    presenter.doAuth(alias!, password!, rememberMeRef.current!, firstName, lastName, imageBytes, "");
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
