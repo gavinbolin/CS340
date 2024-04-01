@@ -1,6 +1,7 @@
-import { GetUserRequest, GetUserResponse } from "tweeter-shared";
+import { GetUserDTO, GetUserResponse } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 
-export const handler = async (event:GetUserRequest): Promise<GetUserResponse> => {
-  return new GetUserResponse(true, "", await new UserService().getUser(event.authToken, event.alias));
+export const handler = async (event:JSON): Promise<GetUserResponse> => {
+  const request = GetUserDTO.fromJson(event);
+  return new GetUserResponse(true, "", await new UserService().getUser(request.authToken, request.alias));
 };

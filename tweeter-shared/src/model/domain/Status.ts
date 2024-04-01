@@ -236,13 +236,16 @@ export class Status {
   }
 
   public equals(other: Status): boolean {
+    // console.log("EQUALS METHOD THIS::", this.post);
+    // console.log("EQUALS MRTHOD OTHER::", other._post);
     return (
       this._user.equals(other.user) &&
       this._timestamp === other._timestamp &&
       this._post === other.post
     );
   }
-
+  
+  public toJson(): string { return JSON.stringify(this); }
   public static fromJson(json: string | null | undefined): Status | null {
     if (!!json) {
       let jsonObject: {
@@ -256,22 +259,41 @@ export class Status {
         _timestamp: number;
         _segments: PostSegment[];
       } = JSON.parse(json);
-      return new Status(
-        jsonObject._post,
-        new User(
-          jsonObject._user._firstName,
-          jsonObject._user._lastName,
-          jsonObject._user._alias,
-          jsonObject._user._imageUrl
-        ),
-        jsonObject._timestamp
-      );
+      // let user = User.fromJson(JSON.stringify(jsonObject._user));
+      // console.log("DESERIALIZED USER", user);
+      // if(user === undefined) {throw new Error("BAD USER IN STATUS due to UNDEFINED");}
+      // else if (user === null) {throw new Error("BAD USER IN STATUS due to NULL");}
+      if (jsonObject == null) return null;
+      else {
+        return new Status(
+          jsonObject._post,
+          new User(
+            jsonObject._user._firstName,
+            jsonObject._user._lastName,
+            jsonObject._user._alias,
+            jsonObject._user._imageUrl
+          ),
+          jsonObject._timestamp
+        );
+      }
     } else {
       return null;
     }
   }
-
-  public toJson(): string {
-    return JSON.stringify(this);
-  }
 }
+//   public static fromJson(json:string|null|undefined): Status|null{ console.log("HEEEEEERRE::",json); return json ? this.fromDTO(JSON.parse(json)): null }
+//   public static fromDTO(dto: StatusDTO|null|undefined): Status|null { return dto ? new Status(dto.post, dto.user, dto.timestamp): null; }
+//   public get dto(): StatusDTO{
+//     return {
+//       post: this.post,
+//       user: this.user,
+//       timestamp: this.timestamp,
+//     }
+//   }
+// }
+
+// export interface StatusDTO{
+//   readonly post:string, 
+//   readonly user:User,
+//   readonly timestamp:number
+// }

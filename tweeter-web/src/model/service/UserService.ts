@@ -9,13 +9,14 @@ export class UserService{
     alias: string,
     password: string
   ): Promise<[User, AuthToken]> {
-    const loginRequest:LoginRequest = new LoginRequest(alias, password);
-    let loginResponse = await this.facade.login(loginRequest);
+    const request:LoginRequest = {alias:alias, password:password}//new LoginRequest(alias, password);
 
-    const user = loginResponse._user; // let user = FakeData.instance.firstUser;
-    const token = loginResponse._token;  //AuthToken.fromJson(JSON.stringify(loginResponse));
+    // request = request as unknown as LoginRequest;
+    const response = await this.facade.login(request);
+
+    const user = response.user; 
+    const token = response.token;  
     if (user === null || token == null) { throw new Error("Invalid alias or password"); }
-    // console.log("LOGIN USER::", user);
     return [user, token]; // FakeData.instance.authToken
   };
 
@@ -26,27 +27,30 @@ export class UserService{
     password: string,
     userImageBytes: Uint8Array
   ): Promise<[User, AuthToken]> {
-    // let imageStringBase64: string = Buffer.from(userImageBytes).toString("base64");
-    const registerRequest:RegisterRequest = new RegisterRequest(firstName, lastName, alias, password, userImageBytes);
-    let registerResponse = await this.facade.register(registerRequest);
+    let imageStringBase64: string = Buffer.from(userImageBytes).toString("base64") as unknown as string;
+    let request:RegisterRequest = {firstName, lastName, alias, password, imageStringBase64};
+    // request = request as unknown as RegisterRequest;
+    const response = await this.facade.register(request);
 
-    const user = registerResponse._user; 
-    const token = registerResponse._token;
+    const user = response.user; 
+    const token = response.token;
     if (user === null || token === null) { throw new Error("Invalid registration"); }
     return [user, token];
   };
 
   public async logout(authToken: AuthToken): Promise<void> {
-    const logoutRequest:LogoutRequest = new LogoutRequest(authToken);
-    let logoutResponse = await this.facade.logout(logoutRequest);
-    console.log(logoutResponse);
+    let request:LogoutRequest = {authToken:authToken};
+    // request = request as unknown as LogoutRequest;
+    let response = await this.facade.logout(request);
+    console.log(response);
     await new Promise((res) => setTimeout(res, 1000)); 
   };
 
   public async getUser(authToken: AuthToken, alias: string): Promise<User | null>{
-    const getUserRequest:GetUserRequest = new GetUserRequest(authToken, alias);
-    let getUserResponse = await this.facade.getUser(getUserRequest);
-    const user = getUserResponse._user;
+    let request:GetUserRequest = {authToken:authToken, alias:alias};
+    // request = request as unknown as GetUserRequest;
+    const getUserResponse = await this.facade.getUser(request);
+    const user = getUserResponse.user;
     return user;
   };
 }

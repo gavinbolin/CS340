@@ -1,6 +1,7 @@
 import { TweeterResponse, AuthenticateResponse, GetUserResponse, LoginRequest, RegisterRequest, GetUserRequest, LogoutRequest, LoadMoreItemsRequest, Status, LoadStatusItemsResponse, PostStatusRequest, User, LoadUserItemsResponse, InteractWithUserRequest, GetPrimitiveResponse, GetUserItemRequest, FollowResponse } from "tweeter-shared";  //, GetUserResponse
 import { ClientCommunicator } from "./ClientCommunicator";
-import { LoadMoreStatusRequest } from "tweeter-shared/dist/model/network/Request";
+// import { LoadMoreStatusRequest } from "tweeter-shared/dist/model/network/Request";
+// PRES -> SERVICE() -> SF -> CC(req>string // res>json) -> SF(res>Obj) -> SERVICE
 
 export class ServerFacade {
   private SERVER_URL = "https://4oe31ik4v6.execute-api.us-west-1.amazonaws.com/dev"; //???
@@ -9,22 +10,22 @@ export class ServerFacade {
   // USER SERVICES
   async login(request: LoginRequest): Promise<AuthenticateResponse> {
     const endpoint = "/login";
-    const response = await this.clientCommunicator.doPost<LoginRequest, AuthenticateResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<LoginRequest, JSON>(request, endpoint);
     return AuthenticateResponse.fromJson(response);
   }
   async register(request: RegisterRequest): Promise<AuthenticateResponse> {
     const endpoint = "/register";
-    const response = await this.clientCommunicator.doPost<RegisterRequest, AuthenticateResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<RegisterRequest, JSON>(request, endpoint);
     return AuthenticateResponse.fromJson(response);
   }
   async logout(request: LogoutRequest): Promise<TweeterResponse> {
     const endpoint = "/logout";
-    const response = await this.clientCommunicator.doPost<LogoutRequest, TweeterResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<LogoutRequest, JSON>(request, endpoint);
     return TweeterResponse.fromJson(response);
   }
   async getUser(request: GetUserRequest): Promise<GetUserResponse> {
     const endpoint = "/get-user";
-    const response = await this.clientCommunicator.doPost<GetUserRequest, GetUserResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<GetUserRequest, JSON>(request, endpoint);
     // console.log("HERE::", GetUserResponse.fromJson(response));
     return GetUserResponse.fromJson(response);
   }
@@ -32,20 +33,20 @@ export class ServerFacade {
   // STATUS SERVICES
   async loadMoreFeedItems(request: LoadMoreItemsRequest<Status>): Promise<LoadStatusItemsResponse> {
     const endpoint = "/loadMoreFeedItems";
-    const response = await this.clientCommunicator.doPost<LoadMoreItemsRequest<Status>, LoadStatusItemsResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<LoadMoreItemsRequest<Status>, JSON>(request, endpoint);
     return LoadStatusItemsResponse.fromJson(response); 
   }
   async loadMoreStoryItems(request: LoadMoreItemsRequest<Status>): Promise<LoadStatusItemsResponse> {
-    console.log("HERERE STORY REQUEST::",request);
+    console.log("HERERE STORY REQUEST::",JSON.stringify(request));
     const endpoint = "/loadMoreStoryItems";
-    const response = await this.clientCommunicator.doPost<LoadMoreItemsRequest<Status>, LoadStatusItemsResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<LoadMoreItemsRequest<Status>, JSON>(request, endpoint);
     console.log("HERE STORY RESPONSE ::",response);
     return LoadStatusItemsResponse.fromJson(response);
   }
   async postStatus(request: PostStatusRequest): Promise<TweeterResponse> {
     const endpoint = "/postStatus";
     console.log("HERE POST STAT REQ::", request);
-    const response = await this.clientCommunicator.doPost<PostStatusRequest, TweeterResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<PostStatusRequest, JSON>(request, endpoint);
     console.log("HERE POST STAT RES::", response);
     return TweeterResponse.fromJson(response);
   }
@@ -54,38 +55,39 @@ export class ServerFacade {
   async loadMoreFollowers(request: LoadMoreItemsRequest<User>): Promise<LoadUserItemsResponse> {
     console.log("HERERE FOL REQ::",request);  
     const endpoint = "/getMoreFollowers";
-    const response = await this.clientCommunicator.doPost<LoadMoreItemsRequest<User>, LoadUserItemsResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<LoadMoreItemsRequest<User>, JSON>(request, endpoint);
     console.log("HERE FOLLOWER ITEMS::",response);
     return LoadUserItemsResponse.fromJson(response); 
   }
   async loadMoreFollowees(request: LoadMoreItemsRequest<User>): Promise<LoadUserItemsResponse> {
     const endpoint = "/getMoreFollowees";
-    const response = await this.clientCommunicator.doPost<LoadMoreItemsRequest<User>, LoadUserItemsResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<LoadMoreItemsRequest<User>, JSON>(request, endpoint);
     return LoadUserItemsResponse.fromJson(response); 
   }
   async getIsFollowersStatus(request: InteractWithUserRequest): Promise<GetPrimitiveResponse> {
     const endpoint = "/getIsFollower";
-    const response = await this.clientCommunicator.doPost<InteractWithUserRequest, GetPrimitiveResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<InteractWithUserRequest, JSON>(request, endpoint);
     return GetPrimitiveResponse.fromJson(response);
   }
   async getFollowersCount(request: GetUserItemRequest): Promise<GetPrimitiveResponse> {
     const endpoint = "/getFollowersCount";
-    const response = await this.clientCommunicator.doPost<GetUserItemRequest, GetPrimitiveResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<GetUserItemRequest, JSON>(request, endpoint);
     return GetPrimitiveResponse.fromJson(response);
   }
   async getFolloweesCount(request: GetUserItemRequest): Promise<GetPrimitiveResponse> {
     const endpoint = "/getFolloweesCount";
-    const response = await this.clientCommunicator.doPost<GetUserItemRequest, GetPrimitiveResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<GetUserItemRequest, JSON>(request, endpoint);
     return GetPrimitiveResponse.fromJson(response);
   }
   async follow(request: GetUserItemRequest): Promise<FollowResponse> {
     const endpoint = "/follow";
-    const response = await this.clientCommunicator.doPost<GetUserItemRequest, FollowResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<GetUserItemRequest, JSON>(request, endpoint);
     return FollowResponse.fromJson(response);
   }
   async unfollow(request: GetUserItemRequest): Promise<FollowResponse> {
     const endpoint = "/unfollow";
-    const response = await this.clientCommunicator.doPost<GetUserItemRequest, FollowResponse>(request, endpoint);
+    const response = await this.clientCommunicator.doPost<GetUserItemRequest, JSON>(request, endpoint);
     return FollowResponse.fromJson(response);
   }
 }
+

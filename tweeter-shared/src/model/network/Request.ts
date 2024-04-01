@@ -2,88 +2,112 @@ import { AuthToken } from "../domain/AuthToken";
 import { Status } from "../domain/Status";
 import { User } from "../domain/User";
 
-export class TweeterRequest{}
+export interface TweeterRequest{}
 
 // USER SERVICES
-export class LoginRequest extends TweeterRequest{
+export interface LoginRequest extends TweeterRequest{ 
   alias: string;
   password: string;
-  constructor(a:string, p:string){
-    super();
+}
+export class LoginDTO implements LoginRequest{
+  alias:string;
+  password:string;
+  constructor(a:string,p:string){
     this.alias = a;
     this.password = p;
   }
+  static fromJson(req:JSON):LoginDTO{
+    const jsonObject: LoginRequest = req as unknown as LoginRequest;
+    return new LoginDTO(
+      jsonObject.alias,
+      jsonObject.password
+    );
+  }
 }
-export class RegisterRequest extends TweeterRequest{
+export interface RegisterRequest extends TweeterRequest{
   firstName:string;
   lastName:string;
   alias:string;
   password:string;
-  userImageBytes:Uint8Array;
-  constructor(f:string,l:string,a:string,p:string,i:Uint8Array){ //Uint8Array
-    super();
+  imageStringBase64:string; //string
+}
+export class RegisterDTO implements RegisterRequest{
+  firstName:string;
+  lastName:string;
+  alias:string;
+  password:string;
+  imageStringBase64:string; //string Uint8Array
+  constructor(f:string,l:string,a:string,p:string,u:string){
     this.firstName = f;
     this.lastName = l;
     this.alias = a;
     this.password = p;
-    this.userImageBytes = i;
+    this.imageStringBase64 = u;
+  }
+  static fromJson(req:JSON):RegisterDTO{
+    const jsonObject: RegisterRequest = req as unknown as RegisterRequest;
+    return new RegisterDTO(
+      jsonObject.firstName,
+      jsonObject.lastName,
+      jsonObject.alias,
+      jsonObject.password,
+      jsonObject.imageStringBase64
+    );
   }
 }
-export class LogoutRequest extends TweeterRequest{
+export interface LogoutRequest extends TweeterRequest{ 
+  authToken:AuthToken; 
+}
+// export class LogoutDTO implements LogoutRequest{}
+export interface GetUserRequest extends TweeterRequest{
   authToken:AuthToken;
-  constructor(t:AuthToken){
-    super();
-    this.authToken = t;
-  }
-  static toJson(req: LogoutRequest): string {
-    interface LogoutRequestJson{
-      authToken: User;
-    }
-    const jsonObject: LogoutRequestJson = req as unknown as LogoutRequestJson;
-    const serializedToken = jsonObject.authToken.toJson();
-    if (serializedToken === undefined) { throw new Error("AuthenticateResponse, could not serialize token with json:\n" + JSON.stringify(jsonObject.authToken)); }
-    return serializedToken;
-  }
+  alias:string;
 }
-export class GetUserRequest extends TweeterRequest{
+export class GetUserDTO implements GetUserRequest{
   authToken:AuthToken;
   alias:string;
   constructor(t:AuthToken,a:string){
-    super();
     this.authToken = t;
     this.alias = a;
   }
+  static fromJson(req:JSON):GetUserRequest{
+    const jsonObject: GetUserRequest = req as unknown as GetUserRequest;
+    const deserializedToken = AuthToken.fromJson(JSON.stringify(jsonObject.authToken));
+    if (deserializedToken === undefined || deserializedToken === null) { throw new Error("ERROR with deserializing user\n" + JSON.stringify(jsonObject.authToken)); }
+    return new GetUserDTO(
+      deserializedToken,
+      jsonObject.alias
+    );
+  }
 }
+
 // STATUS SERVICES
-export class LoadMoreItemsRequest<T> extends TweeterRequest{ // lm(Followers / Followees / FeedItems / StoryItems
+export interface LoadMoreItemsRequest<T> extends TweeterRequest{ // lm(Followers / Followees / FeedItems / StoryItems
   token:AuthToken;
   user:User;
   pageSize:number;
   lastItem:T|null;
-  constructor(t:AuthToken,u:User,p:number,l:T|null){
-    super();
+}  
+export class LoadStatusRequest implements LoadMoreItemsRequest<Status>{ 
+  token: AuthToken;
+  user: User;
+  pageSize: number;
+  lastItem: Status | null;
+    constructor(t:AuthToken,u:User,p:number,l:Status|null){
     this.token = t;
     this.user = u;
     this.pageSize = p;
     this.lastItem = l;
   }
-}  
-export class LoadMoreStatusRequest extends LoadMoreItemsRequest<Status>{
-  static fromJson(req:LoadMoreStatusRequest):LoadMoreStatusRequest{
-    interface ItemRequestJson {
-      token: AuthToken;
-      user: User;
-      pageSize: number,
-      lastItem:Status;
-    }
-    const jsonObject: ItemRequestJson = req as unknown as ItemRequestJson;
+  public static fromJson(req:JSON):LoadMoreItemsRequest<Status>{
+    const jsonObject:LoadMoreItemsRequest<User> = req as unknown as LoadMoreItemsRequest<User>;
     const deserializedToken = AuthToken.fromJson(JSON.stringify(jsonObject.token));
-    if (deserializedToken === undefined || deserializedToken === null) { throw new Error("AuthenticateResponse, could not deserialize token with json:\n" + JSON.stringify(jsonObject.token)); }
+    if (deserializedToken === undefined || deserializedToken === null) { throw new Error("ERROR with deserializing user\n" + JSON.stringify(jsonObject.token)); }
     const deserializedUser = User.fromJson(JSON.stringify(jsonObject.user));
-    if (deserializedUser === undefined || deserializedUser === null) { throw new Error("AuthenticateResponse, could not deserialize user with json:\n" + JSON.stringify(jsonObject.user)); }
+    if (deserializedUser === undefined || deserializedUser === null) { throw new Error("ERROR with deserializing token\n" + JSON.stringify(jsonObject.user)); }
     const serializedLastItem = Status.fromJson(JSON.stringify(jsonObject.lastItem));
-    if (serializedLastItem === null) {throw new Error("AuthenticateResponse, could not deserialize last item with json:\n" + JSON.stringify(jsonObject.user));}
-    return new LoadMoreStatusRequest(
+    if (serializedLastItem === undefined) {throw new Error("ERROR with deserializing lastItem\n" + JSON.stringify(jsonObject.user));}
+    return new LoadStatusRequest(
       deserializedToken,
       deserializedUser,
       jsonObject.pageSize,
@@ -91,38 +115,112 @@ export class LoadMoreStatusRequest extends LoadMoreItemsRequest<Status>{
     );
   }
 }
+export class LoadUserRequest implements LoadMoreItemsRequest<User>{ 
+  token: AuthToken;
+  user: User;
+  pageSize: number;
+  lastItem: User | null;
+    constructor(t:AuthToken,u:User,p:number,l:User|null){
+    this.token = t;
+    this.user = u;
+    this.pageSize = p;
+    this.lastItem = l;
+  }
+  public static fromJson(req:JSON):LoadMoreItemsRequest<User>{
+    const jsonObject: LoadMoreItemsRequest<User> = req as unknown as LoadMoreItemsRequest<User>;
+    const deserializedToken = AuthToken.fromJson(JSON.stringify(jsonObject.token));
+    if (deserializedToken === undefined || deserializedToken === null) { throw new Error("ERROR with deserializing user\n" + JSON.stringify(jsonObject.token)); }
+    const deserializedUser = User.fromJson(JSON.stringify(jsonObject.user));
+    if (deserializedUser === undefined || deserializedUser === null) { throw new Error("ERROR with deserializing token\n" + JSON.stringify(jsonObject.user)); }
+    const serializedLastItem = User.fromJson(JSON.stringify(jsonObject.lastItem));
+    if (serializedLastItem === undefined) {throw new Error("ERROR with deserializing lastItem\n" + JSON.stringify(jsonObject.user));}
+    return new LoadUserRequest(
+      deserializedToken,
+      deserializedUser,
+      jsonObject.pageSize,
+      serializedLastItem,
+    );
+  }
+}
+
 //changed to just items rather than feed and story items 
 // export class LoadMoreStoryItems extends TweeterRequest{} lmi
-export class PostStatusRequest extends TweeterRequest{
+export interface PostStatusRequest extends TweeterRequest{
+  authToken:AuthToken;
+  newStatus:Status;
+}
+export class PostStatusDTO implements PostStatusRequest{
   authToken:AuthToken;
   newStatus:Status;
   constructor(t:AuthToken,n:Status){
-    super();
     this.authToken = t;
     this.newStatus = n;
+  }
+  public static fromJson(req:JSON):PostStatusDTO{
+    const jsonObject: PostStatusRequest = req as unknown as PostStatusRequest;
+    const deserializedToken = AuthToken.fromJson(JSON.stringify(jsonObject.authToken));
+    if (deserializedToken === undefined || deserializedToken === null) { throw new Error("ERROR with deserializing user\n" + JSON.stringify(jsonObject.authToken)); }
+    const deserializedStatus = Status.fromJson(JSON.stringify(jsonObject.newStatus));
+    if (deserializedStatus === undefined || deserializedStatus === null) {throw new Error("ERROR with deserializing lastItem\n" + JSON.stringify(jsonObject.newStatus));}
+    return new PostStatusDTO(
+      deserializedToken,
+      deserializedStatus,
+    );
   }
 }
 // FOLLOW SERVICES
 // export class LoadMoreFollowersRequest extends TweeterRequest{} lmi
 // export class LoadMoreFolloweesRequest extends TweeterRequest{} lmi
-export class GetUserItemRequest extends TweeterRequest{ // getFollowersCount / getFolloweesCount / Follow / Unfollow)
+export interface GetUserItemRequest extends TweeterRequest{ // getFollowersCount / getFolloweesCount / Follow / Unfollow)
+  authToken:AuthToken;
+  user:User;
+}
+export class GetUserItemDTO implements GetUserItemRequest{
   authToken:AuthToken;
   user:User;
   constructor(t:AuthToken,u:User){
-    super();
     this.authToken = t;
     this.user = u;
   }
+  public static fromJson(req:JSON):GetUserItemDTO{
+    const jsonObject: GetUserItemRequest = req as unknown as GetUserItemRequest;
+    const deserializedToken = AuthToken.fromJson(JSON.stringify(jsonObject.authToken));
+    if (deserializedToken === undefined || deserializedToken === null) { throw new Error("ERROR with deserializing user\n" + JSON.stringify(jsonObject.authToken)); }
+    const deserializedUser = User.fromJson(JSON.stringify(jsonObject.user));
+    if (deserializedUser === undefined || deserializedUser === null) {throw new Error("ERROR with deserializing lastItem\n" + JSON.stringify(jsonObject.user));}
+    return new GetUserItemDTO(
+      deserializedToken,
+      deserializedUser,
+    );
+  }
 }
-export class InteractWithUserRequest extends TweeterRequest{ // iwu(getIsFollower
+export interface InteractWithUserRequest extends TweeterRequest{ // iwu(getIsFollower
+  authToken:AuthToken;
+  user:User;
+  other_user:User;
+}
+export class InteractWithUserDTO implements InteractWithUserRequest{
   authToken:AuthToken;
   user:User;
   other_user:User;
   constructor(t:AuthToken,u1:User,u2:User){
-    super();
     this.authToken = t;
     this.user = u1;
     this.other_user = u2;
+  }
+  public static fromJson(req:JSON):InteractWithUserDTO{
+    const jsonObject: InteractWithUserRequest = req as unknown as InteractWithUserRequest;
+    const deserializedToken = AuthToken.fromJson(JSON.stringify(jsonObject.authToken));
+    if (deserializedToken === undefined || deserializedToken === null) { throw new Error("ERROR with deserializing user\n" + JSON.stringify(jsonObject.authToken)); }
+    const deserializedUser1 = User.fromJson(JSON.stringify(jsonObject.user));
+    if (deserializedUser1 === undefined || deserializedUser1 === null) {throw new Error("ERROR with deserializing lastItem\n" + JSON.stringify(jsonObject.user));}
+    const deserializedUser2 = User.fromJson(JSON.stringify(jsonObject.other_user));
+    if (deserializedUser2 === undefined || deserializedUser2 === null) {throw new Error("ERROR with deserializing lastItem\n" + JSON.stringify(jsonObject.user));}
+    return new InteractWithUserDTO(
+      deserializedToken,
+      deserializedUser1,
+      deserializedUser2
+    );
   }
 }
 // export class GetFollowersCountRequest extends TweeterRequest{}

@@ -1,4 +1,4 @@
-import { UserDTO } from "../dto/UserDTO";
+// import { UserDTO } from "../dto/UserDTO";
 
 export class User {
   private _firstName: string;
@@ -34,39 +34,35 @@ export class User {
 
   public equals(other: User): boolean { return this._alias === other._alias; }
 
+  public toJson(): string { return JSON.stringify(this); }
   public static fromJson(json: string | null | undefined): User | null {
+    // console.log("USER FROMJSON1::",json);
     if (!!json) {
-      let jsonObject: {
-        _firstName: string;
-        _lastName: string;
-        _alias: string;
-        _imageUrl: string;
-      } = JSON.parse(json);
-      return new User(
-        jsonObject._firstName,
-        jsonObject._lastName,
-        jsonObject._alias,
-        jsonObject._imageUrl
-      );
+      let jsonObject: { _firstName: string, _lastName: string, _alias: string, _imageUrl: string } = JSON.parse(json);
+      // console.log("USER FROMJSON2::",jsonObject);
+      if (jsonObject._alias == null) return null;
+      else return new User(jsonObject._firstName, jsonObject._lastName, jsonObject._alias, jsonObject._imageUrl);
     } else {
       return null;
     }
   }
-
-  public toJson(): string {
-    return JSON.stringify(this);
-  }
-
-  // public static fromDTO(dto: UserDTO|null|undefined): User|null {
-  //   return dto ? new User(dto.firstName, dto.lastName, dto.alias, dto.imageUrl): null;
-  // }
-
-  // public get dto(): UserDTO{
-  //   return {
-  //     firstName: this._firstName,
-  //     lastName: this._lastName,
-  //     alias: this._alias,
-  //     imageUrl: this._imageUrl,
-  //   }
-  // }
 }
+
+//   public static fromJson(json:string|null|undefined): User|null{ return json ? this.fromDTO(JSON.parse(json)): null }
+//   public static fromDTO(dto: UserDTO|null|undefined): User|null { return dto ? new User(dto.firstName, dto.lastName, dto.alias, dto.imageUrl): null; }
+//   public get dto(): UserDTO{
+//     return {
+//       firstName: this.firstName,
+//       lastName: this.lastName,
+//       alias: this.alias,
+//       imageUrl: this.imageUrl,
+//     }
+//   }
+// }
+
+// export interface UserDTO{
+//   readonly firstName:string, 
+//   readonly lastName:string,
+//   readonly alias:string,
+//   readonly imageUrl:string,   
+// }

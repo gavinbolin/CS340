@@ -46,16 +46,29 @@ export class AuthToken {
     this._timestamp = value;
   }
 
+  public toJson(): string { return JSON.stringify(this); }
   public static fromJson(json: string | null | undefined): AuthToken | null {
     if (!!json) {
-      let jsonObject: { _token: string; _timestamp: number } = JSON.parse(json);
+      let jsonObject: { _token: string, _timestamp: number } = JSON.parse(json);
+      // console.log("AUTH FROMJSON::",jsonObject);
       return new AuthToken(jsonObject._token, jsonObject._timestamp);
     } else {
       return null;
     }
   }
-
-  public toJson(): string {
-    return JSON.stringify(this);
-  }
 }
+//   public static fromJson(json:string|null|undefined): AuthToken|null{ return json ? this.fromDTO(JSON.parse(json)): null }
+//   public static fromDTO(dto: AuthTokenDTO|null|undefined): AuthToken|null { return dto ? new AuthToken(dto.token, dto.timestamp): null; }
+//   public get dto(): AuthTokenDTO{
+//     return {
+//       token: this.token,
+//       timestamp: this.timestamp,
+//     }
+//   }
+// }
+
+// export interface AuthTokenDTO{
+//   readonly token:string,
+//   readonly timestamp:number,   
+// }
+// {"token":{"_token":"41f0abf3-60ee-4a4a-a8b8-67ee883f0f5c","_timestamp":1711766744800},"user":{"_firstName":"Allen","_lastName":"Anderson","_alias":"@allen","_imageUrl":"https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png"},"pageSize":10,"lastItem":null}

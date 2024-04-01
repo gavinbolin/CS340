@@ -1,4 +1,4 @@
-import { AuthToken, User, Status, LoadMoreItemsRequest, FakeData, PostStatusRequest } from "tweeter-shared";
+import { AuthToken, User, Status, LoadMoreItemsRequest, PostStatusRequest } from "tweeter-shared";
 import { ServerFacade } from "../../network/ServerFacade";
 
 export class StatusService{
@@ -10,11 +10,12 @@ export class StatusService{
     pageSize: number,
     lastItem: Status | null
   ): Promise<[(Status|null)[], boolean]> {
-    const loadItemsRequest:LoadMoreItemsRequest<Status> = new LoadMoreItemsRequest<Status>(authToken, alias, pageSize, lastItem);
-    let loadItemsResponse = await this.facade.loadMoreFeedItems(loadItemsRequest);
+    let request = {token:authToken, user:alias, pageSize:pageSize, lastItem:lastItem};
+    request = request as unknown as LoadMoreItemsRequest<Status>;
+    const response = await this.facade.loadMoreFeedItems(request);
 
-    const items = loadItemsResponse._items; 
-    const moreItems = loadItemsResponse._moreItems;  
+    const items = response.items; 
+    const moreItems = response.moreItems;  
     if (items === null || moreItems == null) { throw new Error("Invalid response of Status Items"); }
     return [items, moreItems]; 
   };
@@ -25,19 +26,21 @@ export class StatusService{
     pageSize: number,
     lastItem: (Status|null)
   ): Promise<[(Status|null)[], boolean]> {
-    const loadItemsRequest:LoadMoreItemsRequest<Status> = new LoadMoreItemsRequest<Status>(authToken, alias, pageSize, lastItem);
-    let loadItemsResponse = await this.facade.loadMoreStoryItems(loadItemsRequest);
-
-    const items = loadItemsResponse._items; 
-    const moreItems = loadItemsResponse._moreItems;  
+    let request = {token:authToken, user:alias, pageSize:pageSize, lastItem:lastItem};
+    request = request as unknown as LoadMoreItemsRequest<Status>;
+    const loadItemsResponse = await this.facade.loadMoreStoryItems(request);
+    
+    const items = loadItemsResponse.items; 
+    const moreItems = loadItemsResponse.moreItems;  
     if (items === null || moreItems == null) { throw new Error("Invalid response of Status Items"); }
     return [items, moreItems]; 
   };
 
   public async postStatus( authToken: AuthToken, newStatus: Status ): Promise<void> { 
-    const postStatusRequest:PostStatusRequest = new PostStatusRequest(authToken, newStatus);
-    let postStatusResponse = await this.facade.postStatus(postStatusRequest);
-    console.log(postStatusResponse);
+    let request = {authToken, newStatus};
+    request = request as unknown as PostStatusRequest;
+    const response = await this.facade.postStatus(request);
+    console.log("POST STATUS RESP",response);
     await new Promise((f) => setTimeout(f, 2000));
-};
+  };
 } 

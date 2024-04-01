@@ -1,6 +1,7 @@
-import { GetPrimitiveResponse, InteractWithUserRequest } from "tweeter-shared";
+import { GetPrimitiveResponse, InteractWithUserDTO } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
 
-export const handler = async (event: InteractWithUserRequest): Promise<GetPrimitiveResponse> => {
-  return new GetPrimitiveResponse(true, "", await new FollowService().getIsFollowerStatus(event.authToken, event.user, event.other_user));
+export const handler = async (event: JSON): Promise<GetPrimitiveResponse> => {
+  const request = InteractWithUserDTO.fromJson(event);
+  return new GetPrimitiveResponse(true, "", await new FollowService().getIsFollowerStatus(request.authToken, request.user, request.other_user));
 };

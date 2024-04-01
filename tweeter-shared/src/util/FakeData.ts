@@ -15,16 +15,16 @@ export class FakeData {
   }
 
   private readonly allUsers: User[] = [
-    new User("Allen", "Anderson", "@allen", MALE_IMAGE_URL),
-    new User("Amy", "Ames", "@amy", FEMALE_IMAGE_URL),
-    new User("Bob", "Bobson", "@bob", MALE_IMAGE_URL),
-    new User("Bonnie", "Beatty", "@bonnie", FEMALE_IMAGE_URL),
-    new User("Chris", "Colston", "@chris", MALE_IMAGE_URL),
-    new User("Cindy", "Coats", "@cindy", FEMALE_IMAGE_URL),
-    new User("Dan", "Donaldson", "@dan", MALE_IMAGE_URL),
-    new User("Dee", "Dempsey", "@dee", FEMALE_IMAGE_URL),
-    new User("Elliott", "Enderson", "@elliott", MALE_IMAGE_URL),
-    new User("Elizabeth", "Engle", "@elizabeth", FEMALE_IMAGE_URL),
+    new User("Allen", "Anderson", "@allen", MALE_IMAGE_URL), //0
+    new User("Amy", "Ames", "@amy", FEMALE_IMAGE_URL), //1
+    new User("Bob", "Bobson", "@bob", MALE_IMAGE_URL), //2
+    new User("Bonnie", "Beatty", "@bonnie", FEMALE_IMAGE_URL), //3
+    new User("Chris", "Colston", "@chris", MALE_IMAGE_URL), //4
+    new User("Cindy", "Coats", "@cindy", FEMALE_IMAGE_URL), //5
+    new User("Dan", "Donaldson", "@dan", MALE_IMAGE_URL), //6
+    new User("Dee", "Dempsey", "@dee", FEMALE_IMAGE_URL), //7
+    new User("Elliott", "Enderson", "@elliott", MALE_IMAGE_URL), //8
+    new User("Elizabeth", "Engle", "@elizabeth", FEMALE_IMAGE_URL), //9
     new User("Frank", "Frandson", "@frank", MALE_IMAGE_URL),
     new User("Fran", "Franklin", "@fran", FEMALE_IMAGE_URL),
     new User("Gary", "Gilbert", "@gary", MALE_IMAGE_URL),
@@ -207,11 +207,16 @@ export class FakeData {
     limit: number,
   ): [Status[], boolean] {
     let statusIndex = 0;
+    console.log("FAKE DATA STUFF HERE!!!");
+    // console.log("LAST STATUS::", lastStatus?.post);
+    // console.log("LAST STATUS::", this.fakeStatuses[9].post);
 
     // Find the index of the first status to be returned
     if (lastStatus != null) {
       for (let i = 0; i < this.fakeStatuses.length; i++) {
         let currentStatus = this.fakeStatuses[i];
+        // console.log("FAKEDATA CURRENT STATUS::", currentStatus.post)
+        // console.log("FAKEDATA FAKE STATUS I::", this.fakeStatuses[i].post);
         if (currentStatus.equals(lastStatus)) {
           statusIndex = i + 1;
           break;
@@ -245,3 +250,95 @@ export class FakeData {
     return user.imageUrl === FEMALE_IMAGE_URL ? 11 : 10;
   }
 }
+
+// {
+//   "token": {
+//     "_token": "41f0abf3-60ee-4a4a-a8b8-67ee883f0f5c",
+//     "_timestamp": 1711766744800
+//   },
+//   "user": {
+//     "_firstName": "Allen",
+//     "_lastName": "Anderson",
+//     "_alias": "@allen",
+//     "_imageUrl": "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png"
+//   },
+//   "pageSize": 10,
+//   "lastItem": {
+//     "_post": "Post 0 9\n        My friend @frank likes this website: http://byu.edu. Do you? \n        Or do you prefer this one: http://cs.byu.edu?",
+//     "_user": {
+//       "_firstName": "Elizabeth",
+//       "_lastName": "Engle",
+//       "_alias": "@elizabeth",
+//       "_imageUrl": "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png"
+//     },
+//     "_timestamp": 270000000000,
+//     "_segments": [
+//       {
+//         "_text": "Post 0 9",
+//         "_startPostion": 0,
+//         "_endPosition": 7,
+//         "_type": "Text"
+//       },
+//       {
+//         "_text": "\n",
+//         "_startPostion": 8,
+//         "_endPosition": 9,
+//         "_type": "Newline"
+//       },
+//       {
+//         "_text": "        My friend ",
+//         "_startPostion": 9,
+//         "_endPosition": 26,
+//         "_type": "Text"
+//       },
+//       {
+//         "_text": "@frank",
+//         "_startPostion": 27,
+//         "_endPosition": 33,
+//         "_type": "Alias"
+//       },
+//       {
+//         "_text": " likes this website: ",
+//         "_startPostion": 33,
+//         "_endPosition": 53,
+//         "_type": "Text"
+//       },
+//       {
+//         "_text": "http://byu.edu",
+//         "_startPostion": 54,
+//         "_endPosition": 68,
+//         "_type": "URL"
+//       },
+//       {
+//         "_text": ". Do you? ",
+//         "_startPostion": 68,
+//         "_endPosition": 77,
+//         "_type": "Text"
+//       },
+//       {
+//         "_text": "\n",
+//         "_startPostion": 78,
+//         "_endPosition": 79,
+//         "_type": "Newline"
+//       },
+//       {
+//         "_text": "        Or do you prefer this one: ",
+//         "_startPostion": 79,
+//         "_endPosition": 113,
+//         "_type": "Text"
+//       },
+//       {
+//         "_text": "http://cs.byu.edu",
+//         "_startPostion": 114,
+//         "_endPosition": 131,
+//         "_type": "URL"
+//       },
+//       {
+//         "_text": "?",
+//         "_startPostion": 131,
+//         "_endPosition": 132,
+//         "_type": "Text"
+//       }
+//     ]
+//   }
+// }
