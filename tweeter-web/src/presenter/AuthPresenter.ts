@@ -26,7 +26,7 @@ export abstract class AuthPresenter extends Presenter {
 
   public async doAuth(alias:string, password:string, rememberMe:boolean, firstName?: string|null, lastName?:string|null, imageBytes?:Uint8Array|null, originalUrl?: string|null) {
     this.doFailReportOperation(async () => {
-      this.auth(alias, password, rememberMe, firstName, lastName, imageBytes, originalUrl)
+      await this.auth(alias, password, rememberMe, firstName, lastName, imageBytes, originalUrl)
     }, this.getItemString());
   };
 }

@@ -11,6 +11,7 @@ export class ServerFacade {
   async login(request: LoginRequest): Promise<AuthenticateResponse> {
     const endpoint = "/login";
     const response = await this.clientCommunicator.doPost<LoginRequest, JSON>(request, endpoint);
+    console.log("HERE LOGIN RESPONSE", response);
     return AuthenticateResponse.fromJson(response);
   }
   async register(request: RegisterRequest): Promise<AuthenticateResponse> {
@@ -26,7 +27,7 @@ export class ServerFacade {
   async getUser(request: GetUserRequest): Promise<GetUserResponse> {
     const endpoint = "/get-user";
     const response = await this.clientCommunicator.doPost<GetUserRequest, JSON>(request, endpoint);
-    // console.log("HERE::", GetUserResponse.fromJson(response));
+    console.log("GET USER HERE::", GetUserResponse.fromJson(response));
     return GetUserResponse.fromJson(response);
   }
 
@@ -37,26 +38,26 @@ export class ServerFacade {
     return LoadStatusItemsResponse.fromJson(response); 
   }
   async loadMoreStoryItems(request: LoadMoreItemsRequest<Status>): Promise<LoadStatusItemsResponse> {
-    console.log("HERERE STORY REQUEST::",JSON.stringify(request));
+    // console.log("HERERE STORY REQUEST::",JSON.stringify(request));
     const endpoint = "/loadMoreStoryItems";
     const response = await this.clientCommunicator.doPost<LoadMoreItemsRequest<Status>, JSON>(request, endpoint);
-    console.log("HERE STORY RESPONSE ::",response);
+    // console.log("HERE STORY RESPONSE ::",response);
     return LoadStatusItemsResponse.fromJson(response);
   }
   async postStatus(request: PostStatusRequest): Promise<TweeterResponse> {
     const endpoint = "/postStatus";
-    console.log("HERE POST STAT REQ::", request);
+    // console.log("HERE POST STAT REQ::", request);
     const response = await this.clientCommunicator.doPost<PostStatusRequest, JSON>(request, endpoint);
-    console.log("HERE POST STAT RES::", response);
+    // console.log("HERE POST STAT RES::", response);
     return TweeterResponse.fromJson(response);
   }
 
   // FOLLOW SERVICES 
   async loadMoreFollowers(request: LoadMoreItemsRequest<User>): Promise<LoadUserItemsResponse> {
-    console.log("HERERE FOL REQ::",request);  
+    // console.log("HERERE FOL REQ::",request);  
     const endpoint = "/getMoreFollowers";
     const response = await this.clientCommunicator.doPost<LoadMoreItemsRequest<User>, JSON>(request, endpoint);
-    console.log("HERE FOLLOWER ITEMS::",response);
+    // console.log("HERE FOLLOWER ITEMS::",response);
     return LoadUserItemsResponse.fromJson(response); 
   }
   async loadMoreFollowees(request: LoadMoreItemsRequest<User>): Promise<LoadUserItemsResponse> {
@@ -65,7 +66,7 @@ export class ServerFacade {
     return LoadUserItemsResponse.fromJson(response); 
   }
   async getIsFollowersStatus(request: InteractWithUserRequest): Promise<GetPrimitiveResponse> {
-    const endpoint = "/getIsFollower";
+    const endpoint = "/getIsFollowerStatus";
     const response = await this.clientCommunicator.doPost<InteractWithUserRequest, JSON>(request, endpoint);
     return GetPrimitiveResponse.fromJson(response);
   }

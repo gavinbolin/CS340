@@ -1,11 +1,13 @@
 import { LoadStatusItemsResponse, LoadStatusRequest } from "tweeter-shared";
-import { StatusService } from "../model/service/StatusService";
+import { DATA } from "./DATA";
 
 export const handler = async (event:JSON): Promise<LoadStatusItemsResponse> => {
   const request = LoadStatusRequest.fromJson(event); 
   return new LoadStatusItemsResponse(true, "", 
-  ...await new StatusService().loadMoreFeedItems( 
+  ...await DATA.statusService.loadMoreFeedItems( 
     request.pageSize, 
-    request.lastItem
+    request.lastItem, 
+    request.token,
+    request.user
   )); //? Status.fromJson(event.lastItem as unknown as string): null));
 };

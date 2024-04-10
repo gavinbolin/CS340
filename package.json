@@ -8,6 +8,11 @@
   "author": "JWilkerson",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.540.0",
+    "@aws-sdk/lib-dynamodb": "^3.540.0",
     "vite-plugin-dts": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/aws-sdk": "^2.7.0"
   }
 }

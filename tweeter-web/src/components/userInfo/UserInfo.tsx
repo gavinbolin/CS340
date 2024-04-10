@@ -49,10 +49,10 @@ const UserInfo = () => {
   };
 
   useEffect(() => {
-    setIsFollowerStatus;
+    setIsFollowerStatus();
     [displayedUser];
-    setNumbFollowees;
-    setNumbFollowers;
+    setNumbFollowees();
+    setNumbFollowers();
   });
 
   return (

@@ -1,4 +1,4 @@
-import { TweeterRequest, TweeterResponse } from "tweeter-shared";
+import { TweeterRequest } from "tweeter-shared";
 
 export class ClientCommunicator {
   private SERVER_URL: string;
@@ -8,7 +8,7 @@ export class ClientCommunicator {
 
   async doPost<REQ extends TweeterRequest, RES>(req:REQ, endpoint:string): Promise<RES> {
     const url = this.SERVER_URL + endpoint;
-    console.log("REQUEST::BEFORE::", req); ////
+    // console.log("REQUEST::BEFORE::", req); ////
     const request = {
       method: "post",
       headers: new Headers({
@@ -16,15 +16,17 @@ export class ClientCommunicator {
       }),
       body: JSON.stringify(req),
     };
-    console.log("REQUEST::AFTER::", request); ////
+    // console.log("REQUEST::AFTER::", request); ////
 
     try {
       const resp: Response = await fetch(url, request);
+      console.log("RESP OK", resp);
       if (resp.ok) {
         const response: RES = await resp.json();
-        console.log("RESPONSE::HERE", response);
+        // console.log("RESPONSE::HERE", response);
         return response;
       } else {
+        console.log("HERE BAD RESPONSE!!!");
         const error = await resp.json();
         throw new Error("ERROR WITH RESPONSE", error.errorMessage);
       }

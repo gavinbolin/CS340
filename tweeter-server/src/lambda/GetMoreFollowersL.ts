@@ -1,7 +1,7 @@
 import { LoadUserItemsResponse, LoadUserRequest, User } from "tweeter-shared";
-import { FollowService } from "../model/service/FollowService";
+import { DATA } from "./DATA";
 
 export const handler = async (event:JSON): Promise<LoadUserItemsResponse> => {
   const request = LoadUserRequest.fromJson(event);
-  return new LoadUserItemsResponse(true, "", ...await new FollowService().loadMoreFollowers(request.token, request.user, request.pageSize, request.lastItem));
+  return new LoadUserItemsResponse(true, "", ...await DATA.followService.loadMoreFollowers(request.token, request.user, request.pageSize, request.lastItem));
 };

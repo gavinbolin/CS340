@@ -41,6 +41,6 @@ export class StatusService{
     request = request as unknown as PostStatusRequest;
     const response = await this.facade.postStatus(request);
     console.log("POST STATUS RESP",response);
-    await new Promise((f) => setTimeout(f, 2000));
+    // await new Promise((f) => setTimeout(f, 2000));
   };
 } 

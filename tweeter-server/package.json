@@ -10,8 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "tweeter-shared": "file:../tweeter-shared",
+    "@aws-sdk/client-s3": "^3.540.0",
+    "crypto-js": "^4.2.0",
     "moment": "^2.29.4",
+    "tweeter-shared": "file:../tweeter-shared",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.2.2"
   }
 }

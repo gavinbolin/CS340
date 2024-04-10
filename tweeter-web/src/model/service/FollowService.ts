@@ -56,7 +56,7 @@ export class FollowService {
   };
 
   public async follow(authToken: AuthToken, userToFollow: User): Promise<[followersCount: number, followeesCount: number]> {
-    await new Promise((f) => setTimeout(f, 2000)); // Pause so we can see the following message. Remove when connected to the server
+    // await new Promise((f) => setTimeout(f, 2000)); // Pause so we can see the following message. Remove when connected to the server
     const request : GetUserItemRequest = {authToken:authToken, user:userToFollow};
     let response = await this.facade.follow(request);
     const followersCount = response.followersCount;
@@ -65,9 +65,9 @@ export class FollowService {
   };
 
   public async unfollow(authToken: AuthToken, userToUnfollow: User): Promise<[followersCount: number, followeesCount: number]> {
-    await new Promise((f) => setTimeout(f, 2000)); // Pause so we can see the unfollowing message. Remove when connected to the server
+    // await new Promise((f) => setTimeout(f, 2000)); // Pause so we can see the unfollowing message. Remove when connected to the server
     const request : GetUserItemRequest = {authToken:authToken, user:userToUnfollow};
-    let response = await this.facade.follow(request);
+    let response = await this.facade.unfollow(request);
     const followersCount = response.followersCount;
     const followeesCount = response.followeesCount;
     return [followersCount, followeesCount];

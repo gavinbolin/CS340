@@ -1,8 +1,7 @@
-import { FollowResponse, GetUserItemRequest } from "tweeter-shared";
-import { FollowService } from "../model/service/FollowService";
-import { GetUserItemDTO } from "tweeter-shared/dist/model/network/Request";
+import { FollowResponse, GetUserItemDTO } from "tweeter-shared";
+import { DATA } from "./DATA";
 
 export const handler = async (event:JSON): Promise<FollowResponse> => {
   const request = GetUserItemDTO.fromJson(event);
-  return new FollowResponse(true, "", ...await new FollowService().follow(request.authToken, request.user));
+  return new FollowResponse(true, "", ...await DATA.followService.follow(request.authToken, request.user));
 };
